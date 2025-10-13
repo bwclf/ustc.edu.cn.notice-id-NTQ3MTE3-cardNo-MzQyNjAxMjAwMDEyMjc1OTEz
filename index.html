@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>访客进校信息</title>
+  <style>
+    html,body{
+      margin:0;
+      padding:0;
+      background:#f5f6f8;
+      font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+      color:#1f2937;
+    }
+
+    .container{
+      max-width:520px;
+      width:94vw;
+      margin:40px auto 60px auto;
+      column-count:1;
+      text-align:center;
+    }
+
+    .card{
+      background:#f5f6f8;
+      border:none;
+      box-shadow:none;
+      padding:16px 12px;
+    }
+
+    .row{margin:14px 0;font-size:16px;color:#1f2937}
+    .label{color:#6b7280;margin-right:6px;font-size:16px}
+    .value{font-weight:700;font-size:18px;color:#111827}
+    .dates{font-weight:700;font-size:18px;color:#111827;line-height:1.6}
+
+    .note{
+      margin:6px 0;
+      font-size:13px;
+      line-height:1.6;
+      color:#111827;
+      font-weight:700;
+      display:inline-block;
+      max-width:75%;
+      word-break:keep-all;
+    }
+
+    .qr-box{margin-top:22px;text-align:center}
+    .qr-box img{
+      width:240px;
+      height:240px;
+      border-radius:10px;
+      padding:8px;
+      background:#fff;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      transition:opacity 0.3s ease-in-out;
+    }
+
+    .refresh{margin-top:10px;font-size:14px;color:#6b7280}
+    .refresh a{color:#2563eb;text-decoration:none;margin-left:6px;font-weight:600}
+    .refresh a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="row"><span class="label">来访人姓名：</span><span class="value">付林</span></div>
+      <div class="row"><span class="label">车牌号：</span><span class="value">皖AAJ8365</span></div>
+      <div class="row"><span class="label">进校校区：</span><span class="value">东校区</span></div>
+      <div class="row"><span class="label">进校日期：</span><span class="dates">10月14日,10月15日,10月16日</span></div>
+
+      <div class="note">注：所有的卡车、厢式货车、挂车、工程车等车辆，在工作日 7:30-8:30 禁止入校。</div>
+
+      <div class="qr-box">
+        <!-- ✅ 绑定id以便JS控制 -->
+        <img id="qrcode" src="./20251012.png" alt="进校二维码" />
+        <div class="refresh">
+          <span id="count">30</span>s 后刷新进校码，
+          <a href="#" id="reload">立即刷新</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var n = 30;
+      var el = document.getElementById('count');
+      var img = document.getElementById('qrcode');
+      var reload = document.getElementById('reload');
+      
+      // 两张二维码图片路径
+      var imgs = ["./20251011.png", "./20251012.png"];
+      var idx = 0; // 当前显示图片索引
+
+      function switchQR(){
+        // 切换二维码
+        idx = 1 - idx;
+        img.style.opacity = 0;
+        setTimeout(function(){
+          img.src = imgs[idx];
+          img.style.opacity = 1;
+        },150);
+      }
+
+      function resetTimer(){
+        n = 30;
+        el.textContent = n;
+        clearInterval(timer);
+        timer = setInterval(countdown, 1000);
+      }
+
+      function countdown(){
+        n--;
+        el.textContent = Math.max(n,0);
+        if(n <= 0){
+          clearInterval(timer);
+          switchQR();  // ✅ 倒计时结束自动刷新
+          resetTimer(); // ✅ 自动重启计时
+        }
+      }
+
+      // 点击立即刷新
+      reload.addEventListener('click', function(e){
+        e.preventDefault();
+        switchQR();
+        resetTimer();
+      });
+
+      var timer = setInterval(countdown, 1000);
+    })();
+  </script>
+</body>
+
+</html>
+
+
